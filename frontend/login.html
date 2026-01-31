@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <h2>Welcome Back</h2>
+
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <div class="auth-footer">
+      New here?
+      <a href="register.html">Create account</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function login() {
+  fetch("http://localhost:5000/auth/login", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value
+    })
+  })
+  .then(res => res.text())
+  .then(msg => {
+    if (msg === "Login success") {
+      localStorage.setItem("username", email.value.split("@")[0]);
+      window.location.href = "home.html";
+    } else {
+      alert(msg);
+    }
+  });
+}
+</script>
+
+</body>
+</html>

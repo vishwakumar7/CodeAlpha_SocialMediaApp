@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<div class="auth-page">
+  <div class="auth-card">
+    <h2>Create Account</h2>
+
+    <input id="name" placeholder="Full Name">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="register()">Register</button>
+
+    <div class="auth-footer">
+      Already have an account?
+      <a href="login.html">Login</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function register() {
+  fetch("http://localhost:5000/auth/register", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      name: name.value,
+      email: email.value,
+      password: password.value
+    })
+  })
+  .then(res => res.text())
+  .then(msg => {
+    alert(msg);
+    if (msg === "Registered") {
+      window.location.href = "login.html";
+    }
+  });
+}
+</script>
+
+</body>
+</html>

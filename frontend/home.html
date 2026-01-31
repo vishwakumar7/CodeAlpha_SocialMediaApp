@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CodeAlpha Social</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo">CodeAlpha</div>
+
+  <div class="nav-actions">
+    <button class="logout" onclick="toggleTheme()">🌙</button>
+    <button class="logout" onclick="logout()">Logout</button>
+    <div class="profile" id="profile">U</div>
+  </div>
+</div>
+
+
+<!-- FEED -->
+<div class="feed">
+
+  <!-- CREATE POST -->
+  <div class="create-post">
+    <textarea id="content" maxlength="280"
+      placeholder="What's on your mind?"></textarea>
+
+    <div class="create-post-footer">
+      <div class="char-count" id="count">0 / 280</div>
+      <button onclick="post()">Post</button>
+    </div>
+  </div>
+
+  <!-- POSTS -->
+  <div id="posts"></div>
+
+</div>
+
+<script>
+
+const username = localStorage.getItem("username") || "User";
+const profile = document.getElementById("profile");
+profile.innerText = username[0].toUpperCase();
+
+/* ===== THEME ===== */
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("dark") ? "dark" : "light"
+  );
+}
+
+/* ===== FEED LOGIC ===== */
+const content = document.getElementById("content");
+const count = document.getElementById("count");
+
+content.addEventListener("input", () => {
+  count.innerText = content.value.length + " / 280";
+});
+
+function timeAgo() {
+  return new Date().toLocaleTimeString();
+}
+
+function load() {
+  fetch("http://localhost:5000/post/all")
+    .then(res => res.json())
+    .then(data => {
+      posts.innerHTML = "";
+      if (data.length === 0) {
+        posts.innerHTML = `<div class="empty">No posts yet. Be the first to post!</div>`;
+        return;
+      }
+
+      data.reverse().forEach(p => {
+        posts.innerHTML += `
+          <div class="post">
+            <div class="post-header">
+              <div class="avatar">${username[0].toUpperCase()}</div>
+              <div>
+                <div class="username">${username}</div>
+                <div class="timestamp">${timeAgo()}</div>
+              </div>
+            </div>
+
+            <div class="post-content">${p.content}</div>
+
+            <div class="actions">
+              <button onclick="like('${p._id}')">❤️ ${p.likes.length}</button>
+            </div>
+
+            <div class="comment-box">
+              <input id="c${p._id}" placeholder="Write a comment...">
+              <button onclick="comment('${p._id}')">Send</button>
+            </div>
+          </div>
+        `;
+      });
+    });
+}
+
+function post() {
+  if (!content.value.trim()) return;
+  fetch("http://localhost:5000/post/create", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ content: content.value })
+  }).then(() => {
+    content.value = "";
+    count.innerText = "0 / 280";
+    load();
+  });
+}
+
+function like(id) {
+  fetch(`http://localhost:5000/post/like/${id}`, { method:"POST" })
+    .then(load);
+}
+
+function comment(id) {
+  fetch(`http://localhost:5000/post/comment/${id}`, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({
+      comment: document.getElementById("c"+id).value
+    })
+  }).then(load);
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+
+load();
+</script>
+
+</script>
+
+</body>
+</html>
