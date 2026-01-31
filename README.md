@@ -69,7 +69,7 @@ CodeAlpha_SocialMediaApp
 ### Steps to Run
 
 1. Clone the repository
-   git clone https://github.com/yourusername/CodeAlpha_SocialMediaApp.git
+   git clone https://github.com/vishwakumar7/CodeAlpha_SocialMediaApp.git
 
 2. Navigate to backend folder
    cd CodeAlpha_SocialMediaApp/backend
@@ -112,7 +112,7 @@ It demonstrates practical knowledge in:
 
 ## 👨‍💻 Author
 
-Naveen Vishwa  
+Vishwa Kumar G  
 Full Stack Developer Intern – CodeAlpha
 
 ---
